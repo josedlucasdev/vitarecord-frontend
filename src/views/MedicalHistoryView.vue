@@ -204,7 +204,7 @@ const goToNewEvolution = () => {
        <div class="flex justify-between items-start">
           <div>
              <h1 class="text-3xl font-headline font-extrabold text-primary mb-1">REPORTE DE HISTORIA CLÍNICA</h1>
-             <p class="text-sm text-on-surface-variant font-bold uppercase tracking-widest">The Clinical Gallery • Gestión Médica Integral</p>
+             <p class="text-sm text-on-surface-variant font-bold uppercase tracking-widest">VitaRecord • Gestión Médica Integral</p>
           </div>
           <div class="text-right">
              <p class="text-sm font-bold text-on-surface">Fecha de Impresión: {{ new Date().toLocaleDateString() }}</p>
@@ -745,7 +745,7 @@ const goToNewEvolution = () => {
              <p class="text-[8px] uppercase font-bold text-outline">Firma del Especialista</p>
           </div>
        </div>
-       <p class="text-[8px] text-outline text-center uppercase tracking-widest">Generado automáticamente por The Clinical Gallery - Todos los derechos reservados.</p>
+       <p class="text-[8px] text-outline text-center uppercase tracking-widest">Generado automáticamente por VitaRecord - Todos los derechos reservados.</p>
     </div>
     <!-- REFERRAL MODAL -->
     <Transition name="fade">

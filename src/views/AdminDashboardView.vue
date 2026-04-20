@@ -147,7 +147,7 @@ const handleCreateProfile = async () => {
         <button @click="emit('toggle-sidebar')" class="md:hidden text-on-surface-variant hover:bg-[#f3f4f5] transition-colors duration-300 p-2 rounded-full">
           <span class="material-symbols-outlined">menu</span>
         </button>
-        <span class="text-xl font-extrabold text-primary tracking-tight font-headline">The Clinical Gallery</span>
+        <span class="text-xl font-extrabold text-primary tracking-tight font-headline">VitaRecord</span>
         <span class="ml-4 px-2 py-0.5 bg-primary-container text-on-primary-container text-[10px] font-bold rounded uppercase tracking-wider">Portal Administrativo</span>
       </div>
       

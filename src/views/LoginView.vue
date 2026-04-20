@@ -43,7 +43,7 @@ const handleLogin = async () => {
         <span class="material-symbols-outlined text-[48px]">local_hospital</span>
       </div>
       <h2 class="mt-2 text-center text-3xl font-extrabold text-on-surface font-headline tracking-tight">
-        The Clinical Gallery
+        VitaRecord
       </h2>
       <p class="mt-2 text-center text-sm text-on-surface-variant font-label uppercase tracking-widest">
         Acceso de Personal Autorizado
