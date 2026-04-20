@@ -37,14 +37,15 @@ const closeLightbox = () => {
 
 const getAttachmentUrl = (path) => {
   if (!path) return ''
-  // Forzamos que use el dominio de la API
-  const baseUrl = API_URL.includes('http') 
-    ? API_URL.split('/api')[0] 
-    : 'https://api.vitarecord.com'
-  
-  const finalUrl = `${baseUrl}/storage/${path}`
-  console.log('Image URL Debug:', { originalPath: path, finalUrl })
-  return finalUrl
+  try {
+    // Usamos el API nativo de URL para obtener solo el dominio (https://api.vitarecord.com)
+    const url = new URL(API_URL)
+    const finalUrl = `${url.origin}/storage/${path}`
+    return finalUrl
+  } catch (e) {
+    // Si falla, usamos el dominio por defecto
+    return `https://api.vitarecord.com/storage/${path}`
+  }
 }
 
 const fetchTimeline = async () => {
