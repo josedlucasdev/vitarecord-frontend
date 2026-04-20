@@ -19,6 +19,8 @@ jobs:
           echo "Longitud del servidor: ${#SERVER} caracteres"
           echo "Longitud del usuario: ${#USER} caracteres"
           if [ -z "$SERVER" ]; then echo "⚠️ ERROR: FTP_SERVER está vacío"; exit 1; fi
+          echo "Probando resolución DNS para: $SERVER"
+          nslookup $SERVER || echo "❌ ERROR: No se puede resolver el host $SERVER"
         env:
           SERVER: ${{ secrets.FTP_SERVER }}
           USER: ${{ secrets.FTP_USERNAME }}
