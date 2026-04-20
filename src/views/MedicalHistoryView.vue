@@ -37,9 +37,9 @@ const closeLightbox = () => {
 
 const getAttachmentUrl = (path) => {
   if (!path) return ''
-  // Extract filename from "clinical_attachments/filename.png"
-  const filename = path.split('/').pop()
-  return `${API_URL.replace('/api', '')}/clinical-assets/${filename}`
+  // Laravel guarda la ruta como "clinical_attachments/filename.ext"
+  // El enlace simbólico en cPanel mapea "/storage" a "storage/app/public"
+  return `${API_URL.replace('/api', '')}/storage/${path}`
 }
 
 const fetchTimeline = async () => {
