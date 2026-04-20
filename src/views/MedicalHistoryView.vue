@@ -37,9 +37,14 @@ const closeLightbox = () => {
 
 const getAttachmentUrl = (path) => {
   if (!path) return ''
-  // Laravel guarda la ruta como "clinical_attachments/filename.ext"
-  // El enlace simbólico en cPanel mapea "/storage" a "storage/app/public"
-  return `${API_URL.replace('/api', '')}/storage/${path}`
+  // Forzamos que use el dominio de la API
+  const baseUrl = API_URL.includes('http') 
+    ? API_URL.split('/api')[0] 
+    : 'https://api.vitarecord.com'
+  
+  const finalUrl = `${baseUrl}/storage/${path}`
+  console.log('Image URL Debug:', { originalPath: path, finalUrl })
+  return finalUrl
 }
 
 const fetchTimeline = async () => {
