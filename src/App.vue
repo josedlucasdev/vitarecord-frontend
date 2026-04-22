@@ -1,6 +1,6 @@
 <script setup>
 import { IonApp, IonRouterOutlet } from '@ionic/vue'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useAuthStore } from './store/auth'
 import { useUiStore } from './store/ui'
 import router from './router' // Importamos la instancia directamente
@@ -23,6 +23,11 @@ const userRoleLabel = computed(() => {
   const roles = { admin: 'Administrador', doctor: 'Personal Médico', patient: 'Paciente' }
   return roles[authStore.user?.role] || 'Usuario'
 })
+const isSettingsOpen = ref(false)
+
+const toggleSettings = () => {
+  isSettingsOpen.value = !isSettingsOpen.value
+}
 </script>
 
 <template>
@@ -35,7 +40,7 @@ const userRoleLabel = computed(() => {
       <!-- Navbar (Sidebar Lateral) -->
       <nav 
         v-if="!isLoginRoute"
-        class="bg-surface-container-low flex flex-col h-screen shrink-0 w-64 border-r border-outline-variant/15 py-8 px-4 z-50 transition-all duration-300 ease-in-out fixed inset-y-0 left-0 md:relative"
+        class="bg-surface-container-low flex flex-col h-screen shrink-0 w-64 border-r border-outline-variant/15 py-8 px-4 z-50 transition-all duration-300 ease-in-out fixed inset-y-0 left-0 md:relative overflow-y-auto hide-scrollbar"
         :class="uiStore.isSidebarOpen ? 'translate-x-0 md:ml-0' : '-translate-x-full md:translate-x-0 md:-ml-64'"
       >
         <div class="flex flex-col mb-10 px-4 mt-4 text-left relative">
@@ -71,6 +76,28 @@ const userRoleLabel = computed(() => {
             <span class="material-symbols-outlined icon-filled">medical_services</span>
             <span>Nómina Médica</span>
           </router-link>
+
+          <!-- Dropdown Configuración -->
+          <div v-if="authStore.user?.role === 'doctor' || authStore.user?.role === 'admin'" class="space-y-1">
+            <button 
+              @click="toggleSettings"
+              class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface transition-colors font-body text-sm tracking-wide group"
+              :class="isSettingsOpen ? 'text-primary' : ''"
+            >
+              <div class="flex items-center space-x-3">
+                <span class="material-symbols-outlined icon-filled">settings</span>
+                <span>Configuración</span>
+              </div>
+              <span class="material-symbols-outlined transition-transform duration-200 text-sm" :class="isSettingsOpen ? 'rotate-180' : ''">expand_more</span>
+            </button>
+
+            <!-- Submenu Perfil -->
+            <div v-show="isSettingsOpen" class="pl-9 space-y-1 animate-fade-in">
+              <router-link to="/profile" class="flex items-center space-x-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface transition-colors font-body text-xs tracking-wide" active-class="text-primary font-bold" @click="uiStore.closeSidebar()">
+                <span>Mí Perfil</span>
+              </router-link>
+            </div>
+          </div>
         </div>
         
         <div class="mt-auto pt-4 border-t border-outline-variant/15 space-y-1">
