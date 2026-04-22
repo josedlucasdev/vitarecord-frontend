@@ -1,4 +1,5 @@
 <script setup>
+import { IonPage } from '@ionic/vue'
 const API_URL = import.meta.env.VITE_API_BASE_URL
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -203,6 +204,7 @@ const goToNewEvolution = () => {
 </script>
 
 <template>
+  <ion-page>
   <div class="flex-1 flex flex-col min-w-0 overflow-hidden bg-background font-body relative">
     
     <!-- PRINT HEADER (Only visible in PDF/Print) -->
@@ -229,23 +231,48 @@ const goToNewEvolution = () => {
        </nav>
     </header>
 
-    <main v-if="!isLoading && patient" class="flex-1 overflow-y-auto px-8 py-10 w-full max-w-7xl mx-auto print:p-0 print:overflow-visible">
+    <main v-if="!isLoading && patient" class="flex-1 overflow-y-auto hide-scrollbar px-8 py-10 w-full max-w-7xl mx-auto print:p-0 print:overflow-visible">
       
       <!-- Patient Profile Header -->
-      <div class="mb-10 animate-fade-in print:mb-8">
-        <h1 class="text-4xl font-headline font-bold text-on-background tracking-tight mb-2 print:text-3xl">{{ patient.name }}</h1>
-        <div class="flex items-center gap-4 text-sm font-label uppercase tracking-widest text-on-surface-variant print:text-xs">
-           <span>ID: {{ patient.identity_card }}</span>
-           <span class="w-1.5 h-1.5 rounded-full bg-outline-variant"></span>
-           <span>Edad: {{ patient.age }} años</span>
-           <span class="w-1.5 h-1.5 rounded-full bg-outline-variant"></span>
-           <span class="text-primary font-bold">{{ patient.occupation }}</span>
-           <span v-if="patient.address" class="text-outline uppercase tracking-tight flex items-center gap-1">
-             <span class="material-symbols-outlined text-[12px]">location_on</span> {{ patient.address }}
-           </span>
-           <button @click="openReferralModal" class="ml-4 flex items-center gap-1.5 bg-primary/10 text-primary px-3 py-1 rounded-full text-[10px] font-bold hover:bg-primary hover:text-on-primary transition-all print:hidden">
-              <span class="material-symbols-outlined text-sm">share</span> Referir a Colega
-           </button>
+      <!-- Patient Profile Header Card -->
+      <div class="mb-10 animate-fade-in bg-surface-container-low rounded-[2rem] p-6 md:p-8 border border-outline-variant/10 shadow-sm relative overflow-hidden group print:bg-white print:border-outline-variant/30 print:p-0 print:shadow-none print:mb-8">
+        <!-- Subtle backround accent -->
+        <div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl group-hover:bg-primary/10 transition-colors duration-700 print:hidden"></div>
+        
+        <div class="relative z-10">
+          <h1 class="text-4xl md:text-5xl font-headline font-extrabold text-on-background tracking-tight mb-2 md:mb-4 print:text-3xl leading-tight">{{ patient.name }}</h1>
+          
+          <div class="flex flex-col gap-2 md:gap-3">
+            <!-- Row 1: Primary Patient Data -->
+            <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-[11px] md:text-sm font-label uppercase tracking-widest text-on-surface-variant print:text-xs">
+               <div class="flex items-center gap-3 bg-surface-container-high/40 px-3 py-1 rounded-full border border-outline-variant/10">
+                  <span class="text-[10px] text-outline font-bold">ID:</span>
+                  <span class="font-bold text-on-surface">{{ patient.identity_card }}</span>
+               </div>
+               <div class="flex items-center gap-3 bg-surface-container-high/40 px-3 py-1 rounded-full border border-outline-variant/10">
+                  <span class="text-[10px] text-outline font-bold">Edad:</span>
+                  <span class="font-bold text-on-surface">{{ patient.age }} años</span>
+               </div>
+               <div class="flex items-center px-3 py-1 rounded-full bg-primary/5 border border-primary/10">
+                  <span class="text-primary font-extrabold">{{ patient.occupation }}</span>
+               </div>
+            </div>
+
+            <!-- Row 2: Location & Actions -->
+            <div class="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-[11px] md:text-sm font-label uppercase tracking-widest text-on-surface-variant print:text-xs w-full pt-1.5 md:pt-2 border-t border-outline-variant/10">
+               <div v-if="patient.address" class="flex items-center gap-3 text-on-surface-variant/80 max-w-full italic">
+                 <div class="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-sm md:text-base text-primary">location_on</span>
+                 </div>
+                 <span class="tracking-tight">{{ patient.address }}</span>
+               </div>
+               <div v-else class="flex-1"></div>
+               
+               <button @click="openReferralModal" class="ml-auto flex items-center gap-2 bg-primary text-on-primary px-6 py-2 rounded-full text-xs font-extrabold hover:bg-primary-hover shadow-md hover:shadow-lg transition-all active:scale-95 print:hidden">
+                  <span class="material-symbols-outlined text-sm">share</span> Referir a Colega
+               </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -363,20 +390,20 @@ const goToNewEvolution = () => {
         <!-- MAIN: Timeline -->
         <div class="flex-1 flex flex-col min-w-0 print:block">
           
-          <div class="flex justify-between items-end mb-8 print:mb-4">
-            <div class="print:hidden">
-              <h2 class="text-2xl font-headline font-semibold text-on-background">Línea de Tiempo</h2>
+          <div class="flex flex-col md:flex-row justify-between items-center md:items-end gap-6 md:gap-0 mb-8 print:mb-4">
+            <div class="print:hidden text-center md:text-left">
+              <h2 class="text-3xl md:text-2xl font-headline font-semibold text-on-background">Línea de Tiempo</h2>
               <p class="text-sm text-on-surface-variant mt-1">Sucesión cronológica de eventos médicos.</p>
             </div>
             <div class="hidden print:block shadow-none">
                <h2 class="text-xl font-headline font-bold text-primary border-b-2 border-primary/10 pb-2">CRONOLOGÍA DE EVOLUCIONES CLÍNICAS</h2>
             </div>
-            <div class="flex gap-2 print:hidden">
-              <button @click="printReport" class="border border-outline text-on-surface rounded-xl py-3 px-6 font-bold text-sm flex items-center hover:bg-surface-container-high transition-colors">
-                <span class="material-symbols-outlined mr-2">download</span> Exportar PDF
+            <div class="flex flex-row items-center gap-2 w-full md:w-auto px-0 md:px-0 print:hidden">
+              <button @click="printReport" class="flex-1 border border-outline text-on-surface rounded-2xl py-3 px-2 md:px-6 font-bold text-[12px] md:text-sm flex items-center justify-center hover:bg-surface-container-high transition-all active:scale-95">
+                <span class="material-symbols-outlined mr-1 md:mr-2 text-base md:text-lg">download</span> Exportar
               </button>
-              <button @click="goToNewEvolution" class="bg-primary text-on-primary rounded-xl py-3 px-6 font-bold text-sm flex items-center shadow-lg hover:scale-95 transition-transform">
-                <span class="material-symbols-outlined mr-2">edit_document</span> Nueva Evolución
+              <button @click="goToNewEvolution" class="flex-1 bg-primary text-on-primary rounded-2xl py-3 px-2 md:px-6 font-bold text-[12px] md:text-sm flex items-center justify-center shadow-lg hover:bg-primary-hover transition-all active:scale-95">
+                <span class="material-symbols-outlined mr-1 md:mr-2 text-base md:text-lg">edit_document</span> Nueva Evolución
               </button>
             </div>
           </div>
@@ -400,7 +427,7 @@ const goToNewEvolution = () => {
               <div class="w-[calc(100%-4rem)] p-6 rounded-2xl bg-surface-container-lowest shadow-sm border border-outline-variant/15 hover:bg-surface-bright transition-colors print:w-full print:bg-white print:border-outline-variant/30 print:shadow-none print:p-4">
                 <div class="flex justify-between items-start mb-4">
                   <div>
-                    <span class="text-[10px] font-bold uppercase text-primary tracking-widest block mb-1">Evolución Clínica • Dr. {{ evo.doctor?.name }}</span>
+                    <span class="text-[10px] font-bold uppercase text-primary tracking-widest block mb-1">Evolución Clínica • {{ evo.doctor?.name }}</span>
                     <h3 class="font-headline font-bold text-xl text-on-background print:text-lg">{{ evo.reason_for_consultation }}</h3>
                   </div>
                   <span class="text-xs text-on-surface-variant font-bold bg-surface-container-high px-2 py-1.5 rounded-full print:bg-white print:border print:border-outline-variant/20">{{ new Date(evo.date).toLocaleDateString() }}</span>
@@ -807,6 +834,7 @@ const goToNewEvolution = () => {
       </div>
     </Transition>
   </div>
+  </ion-page>
 </template>
 
 <style>

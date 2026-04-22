@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { IonPage } from '@ionic/vue'
 import { useAuthStore } from '../store/auth'
 
 const router = useRouter()
@@ -37,7 +38,8 @@ const handleLogin = async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-surface flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-body">
+  <ion-page>
+    <div class="min-h-screen bg-surface flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-body">
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
       <div class="flex justify-center text-primary mb-2">
         <span class="material-symbols-outlined text-[48px]">local_hospital</span>
@@ -123,5 +125,6 @@ const handleLogin = async () => {
 
       </div>
     </div>
-  </div>
+    </div>
+  </ion-page>
 </template>

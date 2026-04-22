@@ -1,12 +1,15 @@
 <script setup>
+import { IonPage } from '@ionic/vue'
 const API_URL = import.meta.env.VITE_API_BASE_URL
 import { ref, onMounted, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../store/auth'
+import { useUiStore } from '../store/ui'
+import { formatHumanDate } from '../utils/date'
 
 const router = useRouter()
 const authStore = useAuthStore()
-const emit = defineEmits(['toggle-sidebar'])
+const uiStore = useUiStore()
 
 const patients = ref([])
 const searchQuery = ref('')
@@ -38,7 +41,7 @@ const fetchPatients = async (page = 1) => {
         cId: pt.identity_card,
         age: pt.age,
         phone: pt.phone,
-        lastConsult: 'Hoy', 
+        lastConsult: formatHumanDate(pt.evolutions_max_date || pt.created_at),
         reason: pt.occupation || 'Consulta General',
         status: 'Estable',
         statusClass: 'bg-green-50 text-green-700',
@@ -78,22 +81,15 @@ const goToCreate = () => router.push('/patients/create')
 </script>
 
 <template>
+  <ion-page>
   <div class="flex-1 flex flex-col h-screen overflow-hidden bg-background">
     <!-- TopNavBar -->
     <header class="bg-surface-container-lowest/90 backdrop-blur-md border-b border-outline-variant/15 flex justify-between items-center h-16 px-8 shrink-0">
       <div class="flex items-center space-x-4">
-        <button @click="emit('toggle-sidebar')" class="md:hidden text-on-surface-variant hover:bg-[#f3f4f5] transition-colors duration-300 p-2 rounded-full">
+        <button @click="uiStore.openSidebar()" class="md:hidden text-on-surface-variant hover:bg-[#f3f4f5] transition-colors duration-300 p-2 rounded-full">
           <span class="material-symbols-outlined">menu</span>
         </button>
-        <div class="flex items-center bg-surface-container-low rounded-full px-4 py-2 w-64 md:w-96 max-w-full">
-          <span class="material-symbols-outlined text-outline mr-2 text-lg">search</span>
-          <input 
-            v-model="searchQuery"
-            class="bg-transparent border-none focus:ring-0 text-sm font-body text-on-surface w-full placeholder-outline" 
-            placeholder="Buscar en el directorio..." 
-            type="text"
-          />
-        </div>
+        <h1 class="text-lg font-headline font-bold text-on-surface md:hidden">Directorio</h1>
       </div>
       <div class="flex items-center space-x-6 text-on-surface-variant">
         <button class="hover:text-primary transition-all relative">
@@ -106,41 +102,39 @@ const goToCreate = () => router.push('/patients/create')
       </div>
     </header>
 
-    <main class="flex-1 overflow-y-auto p-8 bg-[#f8fafc]">
+    <main class="flex-1 overflow-y-auto p-4 md:p-8 bg-[#f8fafc]">
       <!-- Page Header -->
-      <div class="flex justify-between items-end mb-8 max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 md:mb-8 max-w-7xl mx-auto gap-4">
         <div>
-          <h2 class="text-3xl font-headline font-semibold text-on-surface mb-1 tracking-tight">Directorio de Pacientes</h2>
-          <p class="text-on-surface-variant font-label text-sm uppercase tracking-wider">Tus expedientes asignados</p>
+          <h2 class="text-2xl md:text-3xl font-headline font-semibold text-on-surface mb-1 tracking-tight">Directorio de Pacientes</h2>
+          <p class="text-on-surface-variant font-label text-[10px] md:text-sm uppercase tracking-wider">Tus expedientes asignados</p>
         </div>
-        <button @click="goToCreate" class="py-2.5 px-5 bg-primary text-on-primary rounded-lg font-medium text-sm flex items-center shadow-lg hover:bg-primary-container transition-all">
+        <button @click="goToCreate" class="w-full md:w-auto py-2.5 px-5 bg-primary text-on-primary rounded-lg font-medium text-sm flex items-center justify-center shadow-lg hover:bg-primary-container transition-all">
           <span class="material-symbols-outlined mr-2 text-[18px]">person_add</span> Nuevo Paciente
         </button>
       </div>
 
       <!-- Filters & Tools Bar -->
-      <div class="flex justify-between items-center mb-6 bg-surface-container-lowest p-2 rounded-xl max-w-7xl mx-auto border border-outline-variant/10">
-        <div class="flex space-x-2">
-          <button 
-            @click="currentFilter = 'todos'"
-            :class="[currentFilter === 'todos' ? 'bg-surface-container-low text-primary font-bold' : 'bg-transparent text-on-surface-variant']"
-            class="px-4 py-2 rounded-full text-sm font-medium hover:bg-surface-variant transition-colors"
-          >
-            Todos
-          </button>
-          <button 
-            @click="currentFilter = 'recientes'"
-            :class="[currentFilter === 'recientes' ? 'bg-surface-container-low text-primary font-bold' : 'bg-transparent text-on-surface-variant']"
-            class="px-4 py-2 rounded-full text-sm font-medium hover:bg-surface-container-low transition-colors"
-          >
-            Recientes
-          </button>
+      <div class="flex flex-row justify-between items-center mb-6 bg-surface-container-lowest p-2 md:p-3 rounded-xl max-w-7xl mx-auto border border-outline-variant/10 gap-2 md:gap-4 shadow-sm">
+
+        <!-- Search Bar en la tabla -->
+        <div class="flex-1 min-w-0 flex items-center">
+          <div class="flex items-center bg-surface-container-high/30 rounded-full px-3 py-1.5 md:px-4 md:py-2 w-full border border-outline-variant/20 focus-within:border-primary/50 focus-within:bg-surface-container-lowest shadow-inner transition-all duration-300">
+            <span class="material-symbols-outlined text-primary mr-1.5 md:mr-2 text-base md:text-lg">search</span>
+            <input 
+              v-model="searchQuery"
+              class="bg-transparent border-none focus:ring-0 text-[11px] md:text-sm font-body text-on-surface w-full placeholder-outline p-0" 
+              placeholder="Buscar..." 
+              type="text"
+            />
+          </div>
         </div>
-        <div class="flex items-center space-x-3 text-on-surface-variant">
-          <span class="text-sm font-medium mr-2">Ordenar por:</span>
-          <select v-model="sortBy" class="bg-surface-container-low border-none rounded-lg text-sm py-2 pl-3 pr-8 focus:ring-1 focus:ring-primary cursor-pointer text-on-surface">
-            <option value="ultima_visita">Última Visita</option>
-            <option value="nombre">Nombre (A-Z)</option>
+
+        <div class="flex items-center text-on-surface-variant flex-shrink-0">
+          <span class="hidden md:inline text-sm font-medium mr-2">Ordenar por:</span>
+          <select v-model="sortBy" class="bg-surface-container-low border-none rounded-lg text-[11px] md:text-sm py-1.5 md:py-2 pl-2 md:pl-3 pr-7 md:pr-8 focus:ring-1 focus:ring-primary cursor-pointer text-on-surface">
+            <option value="ultima_visita">Última</option>
+            <option value="nombre">Nombre</option>
           </select>
         </div>
       </div>
@@ -167,35 +161,62 @@ const goToCreate = () => router.push('/patients/create')
             <div class="col-span-1 hidden md:block text-right text-xs font-label uppercase tracking-widest text-on-surface-variant">Acción</div>
           </div>
 
-          <div class="space-y-1">
-            <div v-for="pt in filteredPatients" :key="pt.id" class="grid grid-cols-12 gap-4 px-6 py-4 bg-surface-container-lowest rounded-lg hover:bg-surface-container-highest transition-colors items-center group">
-              <div class="col-span-12 md:col-span-4 flex items-center space-x-4">
-                <div :class="[pt.color]" class="w-10 h-10 rounded-full flex items-center justify-center font-headline font-semibold text-sm shrink-0">
-                  {{ pt.initials }}
+          <div class="space-y-2">
+            <div v-for="pt in filteredPatients" :key="pt.id" class="flex flex-col md:grid md:grid-cols-12 md:gap-4 px-4 py-3 md:px-6 md:py-4 bg-surface-container-lowest rounded-xl hover:bg-surface-container-highest transition-all items-start md:items-center group border border-outline-variant/5 shadow-sm md:shadow-none">
+              <!-- Paciente y Avatar -->
+              <div class="w-full md:col-span-4 flex items-center justify-between md:justify-start space-x-3 mb-2 md:mb-0">
+                <div class="flex items-center space-x-3">
+                  <div :class="[pt.color]" class="w-10 h-10 rounded-full flex items-center justify-center font-headline font-semibold text-sm shrink-0 shadow-sm border border-white/10">
+                    {{ pt.initials }}
+                  </div>
+                  <div>
+                    <p class="font-headline font-bold text-on-surface text-sm md:text-base leading-tight">{{ pt.name }}</p>
+                    <p class="font-body text-[11px] md:text-xs text-on-surface-variant">ID: {{ pt.cId }}</p>
+                  </div>
                 </div>
-                <div>
-                  <p class="font-headline font-semibold text-on-surface text-base">{{ pt.name }}</p>
-                  <p class="font-body text-xs text-on-surface-variant">ID: {{ pt.cId }}</p>
+                <!-- Status en movil (esquina superior derecha) -->
+                <div class="md:hidden">
+                  <span :class="[pt.statusClass]" class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                    <span :class="[pt.dot]" class="w-1 h-1 rounded-full mr-1.5"></span> {{ pt.status }}
+                  </span>
                 </div>
               </div>
-              <div class="col-span-12 md:col-span-2">
-                <p class="font-body text-sm text-on-surface">{{ pt.age }} años</p>
+
+              <!-- Edad -->
+              <div class="w-full md:col-span-2 flex md:block items-center justify-between mb-1.5 md:mb-0 px-1 md:px-0">
+                <span class="md:hidden text-[11px] font-label text-on-surface-variant uppercase tracking-widest">Edad:</span>
+                <p class="font-body text-xs md:text-sm text-on-surface">{{ pt.age }} años</p>
               </div>
-              <div class="col-span-12 md:col-span-3">
-                <p class="font-body text-sm text-on-surface">{{ pt.lastConsult }}</p>
-                <p class="font-body text-xs text-on-surface-variant truncate">Causa: {{ pt.reason }}</p>
+
+              <!-- Info / Ultima Consulta -->
+              <div class="w-full md:col-span-3 mb-3 md:mb-0 px-1 md:px-0">
+                 <div class="flex flex-col">
+                    <div class="flex md:block items-center justify-between mb-0.5 md:mb-0">
+                      <span class="md:hidden text-[11px] font-label text-on-surface-variant uppercase tracking-widest">Última:</span>
+                      <p class="font-body text-xs md:text-sm text-on-surface font-medium md:font-normal">{{ pt.lastConsult }}</p>
+                    </div>
+                    <p class="font-body text-[11px] md:text-xs text-on-surface-variant truncate flex items-center bg-surface-container-high/40 md:bg-transparent px-2 py-0.5 md:p-0 rounded md:rounded-none">
+                      <span class="material-symbols-outlined text-[10px] md:hidden mr-1">medical_information</span>
+                      {{ pt.reason }}
+                    </p>
+                 </div>
               </div>
-              <div class="col-span-12 md:col-span-2">
+
+              <!-- Estatus en Desktop -->
+              <div class="hidden md:block md:col-span-2">
                 <span :class="[pt.statusClass]" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium">
                   <span :class="[pt.dot]" class="w-1.5 h-1.5 rounded-full mr-1.5"></span> {{ pt.status }}
                 </span>
               </div>
-              <div class="col-span-12 md:col-span-1 flex justify-end items-center gap-4">
-                <router-link :to="`/patients/${pt.id}/edit`" class="text-xs font-bold text-on-surface-variant hover:text-primary transition-all flex items-center" title="Editar Paciente">
+
+              <!-- Acciones -->
+              <div class="w-full md:col-span-1 flex justify-between md:justify-end items-center pt-2 md:pt-0 border-t md:border-t-0 border-outline-variant/10 md:gap-4">
+                <router-link :to="`/patients/${pt.id}/edit`" class="p-2 md:p-0 text-on-surface-variant hover:text-primary transition-all flex items-center gap-1" title="Editar Paciente">
                   <span class="material-symbols-outlined text-[18px]">edit</span>
+                  <span class="md:hidden text-xs font-medium">Editar</span>
                 </router-link>
-                <router-link :to="`/patients/${pt.id}/history`" class="text-xs font-bold text-primary hover:text-primary-container tracking-wider uppercase transition-all whitespace-nowrap flex items-center">
-                  <span class="material-symbols-outlined text-sm mr-1">visibility</span> Historia
+                <router-link :to="`/patients/${pt.id}/history`" class="bg-primary/5 md:bg-transparent px-3 py-1.5 md:px-0 md:py-0 rounded-lg md:rounded-none text-[11px] md:text-xs font-bold text-primary hover:text-primary-container tracking-wider uppercase transition-all whitespace-nowrap flex items-center">
+                  <span class="material-symbols-outlined text-sm mr-1">history</span> Historia
                 </router-link>
               </div>
             </div>
@@ -224,4 +245,5 @@ const goToCreate = () => router.push('/patients/create')
       </div>
     </main>
   </div>
+  </ion-page>
 </template>

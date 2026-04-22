@@ -1,4 +1,5 @@
 <script setup>
+import { IonPage } from '@ionic/vue'
 const API_URL = import.meta.env.VITE_API_BASE_URL
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -200,7 +201,7 @@ const currentMed = ref({
 })
 
 const formData = ref({
-  date: new Date().toISOString().split('T')[0],
+  date: new Date().toISOString(), // Full datetime
   reason_for_consultation: '',
   current_illness: '',
   physical_exam: '',
@@ -332,6 +333,7 @@ const handleSave = async () => {
 </script>
 
 <template>
+  <ion-page>
   <div class="flex-1 bg-background text-on-surface font-body min-h-screen overflow-y-auto">
     <main v-if="patient" class="flex flex-col min-w-0 p-8 w-full max-w-6xl mx-auto">
       
@@ -659,4 +661,5 @@ const handleSave = async () => {
 
     </main>
   </div>
+  </ion-page>
 </template>

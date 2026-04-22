@@ -1,8 +1,10 @@
 <script setup>
+import { IonPage } from '@ionic/vue'
 const API_URL = import.meta.env.VITE_API_BASE_URL
 import { ref, onMounted } from 'vue'
+import { useUiStore } from '../store/ui'
 
-const isSidebarOpen = ref(true)
+const uiStore = useUiStore()
 
 const newDoctor = ref({
   name: '',
@@ -91,8 +93,6 @@ onMounted(() => {
   fetchDoctors()
 })
 
-const emit = defineEmits(['toggle-sidebar'])
-
 const handleCreateProfile = async () => {
   try {
     const url = isEditing.value 
@@ -140,11 +140,12 @@ const handleCreateProfile = async () => {
 </script>
 
 <template>
+  <ion-page>
   <div class="flex-1 flex flex-col h-screen overflow-hidden bg-background w-full">
     <!-- TopAppBar -->
     <header class="bg-surface-container-lowest/90 backdrop-blur-md border-b border-outline-variant/15 flex justify-between items-center px-6 py-3 shrink-0">
       <div class="flex items-center space-x-4">
-        <button @click="emit('toggle-sidebar')" class="md:hidden text-on-surface-variant hover:bg-[#f3f4f5] transition-colors duration-300 p-2 rounded-full">
+        <button @click="uiStore.openSidebar()" class="md:hidden text-on-surface-variant hover:bg-[#f3f4f5] transition-colors duration-300 p-2 rounded-full">
           <span class="material-symbols-outlined">menu</span>
         </button>
         <span class="text-xl font-extrabold text-primary tracking-tight font-headline">VitaRecord</span>
@@ -334,4 +335,5 @@ const handleCreateProfile = async () => {
       </div>
     </main>
   </div>
+  </ion-page>
 </template>

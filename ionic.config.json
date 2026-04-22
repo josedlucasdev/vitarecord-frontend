@@ -1,0 +1,7 @@
+{
+  "name": "Medical History App",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue"
+}

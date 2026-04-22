@@ -1,4 +1,5 @@
 <script setup>
+import { IonPage } from '@ionic/vue'
 const API_URL = import.meta.env.VITE_API_BASE_URL
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -63,6 +64,7 @@ const handleSave = async () => {
 </script>
 
 <template>
+  <ion-page>
   <div class="flex-1 bg-background text-on-surface font-body min-h-screen overflow-y-auto">
     <main class="flex flex-col items-center justify-start py-12 px-4 sm:px-6 lg:px-8 w-full max-w-7xl mx-auto">
       
@@ -220,4 +222,5 @@ const handleSave = async () => {
       </form>
     </main>
   </div>
+  </ion-page>
 </template>

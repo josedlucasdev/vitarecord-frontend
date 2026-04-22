@@ -2,12 +2,14 @@
 const API_URL = import.meta.env.VITE_API_BASE_URL
 import { ref, onMounted, shallowRef, watch, onUnmounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
+import { IonPage } from '@ionic/vue'
 import { useAuthStore } from '../store/auth'
+import { useUiStore } from '../store/ui'
 import * as echarts from 'echarts'
 
 const router = useRouter()
 const authStore = useAuthStore()
-const emit = defineEmits(['toggle-sidebar'])
+const uiStore = useUiStore()
 
 // Referencias de DOM para ECharts
 const activityChartRef = ref(null)
@@ -222,11 +224,12 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="flex-1 flex flex-col h-screen overflow-hidden bg-background">
+  <ion-page>
+    <div class="flex-1 flex flex-col h-screen overflow-hidden bg-background">
     <!-- TopNavBar -->
     <header class="bg-surface-container-lowest/90 backdrop-blur-md border-b border-outline-variant/15 flex justify-between items-center h-16 px-8 shrink-0">
       <div class="flex items-center space-x-4">
-        <button @click="emit('toggle-sidebar')" class="md:hidden text-on-surface-variant hover:bg-[#f3f4f5] transition-colors duration-300 p-2 rounded-full">
+        <button @click="uiStore.openSidebar()" class="md:hidden text-on-surface-variant hover:bg-[#f3f4f5] transition-colors duration-300 p-2 rounded-full">
           <span class="material-symbols-outlined">menu</span>
         </button>
         <h1 class="text-lg font-headline font-bold text-on-surface">Panel de Analíticas</h1>
@@ -414,4 +417,5 @@ onUnmounted(() => {
       </section>
     </main>
   </div>
+  </ion-page>
 </template>
